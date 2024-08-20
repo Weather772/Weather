@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #input-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .weather {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <div id="input-container">
+        <input type="text" id="city" placeholder="Enter city name" required>
+        <button onclick="getWeather()">Get Weather</button>
+    </div>
+
+    <div class="weather" id="weather"></div>
+    <div class="error" id="error"></div>
+
+    <script>
+        async function getWeather() {
+            const city = document.getElementById('city').value;
+            const weatherDiv = document.getElementById('weather');
+            const errorDiv = document.getElementById('error');
+
+            weatherDiv.innerHTML = ''; // Clear previous weather information
+            errorDiv.innerHTML = ''; // Clear previous errors
+
+            try {
+                const response = await fetch(`http://localhost:3000/weather/${city}`);
+                if (!response.ok) {
+                    throw new Error('City not found');
+                }
+                const data = await response.json();
+
+                // Display current weather
+                weatherDiv.innerHTML = `
+                    <h2>Weather in ${data.city} on ${data.currentDate}</h2>
+                    <p><strong>Temperature:</strong> ${data.temperature}°C</p>
+                    <p><strong>Description:</strong> ${data.description}</p>
+                `;
+            } catch (error) {
+                errorDiv.innerHTML = error.message; // Display error message
+            }
+        }
+    </script>
+</body>
+</html>
